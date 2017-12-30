@@ -78,7 +78,7 @@ func (self *Interpreter) Run(cv bool) {
 					}
 				}
 				if !f {
-					fmt.Printf("Não foi possível encontrar o operador \"%s\"\n", "]")
+					fmt.Printf("Não foi possível encontrar o operador \"]\"\n")
 					return
 				}
 			}
