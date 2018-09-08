@@ -70,28 +70,49 @@ func (self *Interpreter) Run(cv bool) {
 			break
 		case '[':
 			{
-				f := false
-				for i := self.codepos + 1; i < self.codelen; i++ {
-					if self.code[i] == ']' {
-						f = true
-						break
+				open := 0
+				position := -1
+				for i := self.codepos; i < self.codelen; i++ {
+
+					if self.code[i] == '[' {
+						open++
+
+					} else if self.code[i] == ']' {
+						open--
+
+						if open == 0 {
+							position = i
+							break
+						}
 					}
 				}
-				if !f {
+
+				if position > -1 {
+					if self.cell[self.pointer] == 0 {
+						self.codepos = position
+					}
+				} else {
 					fmt.Printf("Não foi possível encontrar o operador \"]\"\n")
 					return
 				}
+				break
 			}
 		case ']':
 			{
-				if self.cell[self.pointer] != 0 {
-					for i := self.codepos; i > 0; i-- {
-						if self.code[i] == '[' {
+				clse := 0
+				for i := self.codepos; i > 0; i-- {
+					if self.code[i] == ']' {
+						clse++
+
+					} else if self.code[i] == '[' {
+						clse--
+						if clse == 0 {
 							self.codepos = i - 1
 							break
 						}
 					}
 				}
+				break
 			}
 		case ',':
 			{
@@ -99,6 +120,7 @@ func (self *Interpreter) Run(cv bool) {
 				if err != nil {
 					fmt.Errorf("%s\n", err)
 				}
+				break
 			}
 		}
 		self.codepos++
@@ -107,6 +129,6 @@ func (self *Interpreter) Run(cv bool) {
 
 func main() {
 	f := Interpreter{}
-	f.Start(`++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.`)
+	f.Start(`>++++++++[-<+++++++++>]<.>[][<-]>+>-[+]++>++>+++[>[->+++<<+++>]<<]>-----.>->+++..+++.>-.<<+[>[+>+]>>]<--------------.>>.+++.------.--------.>+.>+.`)
 	f.Run(true)
 }
